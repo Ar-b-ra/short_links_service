@@ -1,0 +1,28 @@
+from pydantic import Field
+from pydantic_settings import BaseSettings
+
+
+class Config(BaseSettings):
+    """
+    Класс настроек для приложения
+    """
+
+    project_name: str = Field(description="Название проекта", default="short_links_service")
+    app_name: str = Field(description="Название сервиса", default="short_links_service")
+    app_version: str = Field(description="Версия API", default="v1")
+
+    app_host: str = Field(
+        description="Хост сервиса",
+        default="0.0.0.0",
+        alias="PROJECT_HOST",
+    )
+    app_port: int = Field(
+        description="Порт сервиса",
+        default="8080",  # type: ignore[assignment]
+        alias="PROJECT_PORT",
+    )
+
+    okd_stage: str = Field(description="Состояние OKD", default="PROD")
+
+
+app_config = Config()
