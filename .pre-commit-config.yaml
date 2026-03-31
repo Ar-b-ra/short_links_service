@@ -12,7 +12,7 @@ repos:
       - id: no-commit-to-branch
         args: [--branch=master, --branch=release, --branch=main]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.0
+    rev: v0.15.8
     hooks:
       - id: ruff-check
         args:
@@ -29,7 +29,7 @@ repos:
         args:
           - --line-length=100
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: conventional-pre-commit
         stages: [ commit-msg ]
