@@ -1,0 +1,34 @@
+version: '3'
+services:
+  short_links_service.backend:
+    build:
+      context: src
+      dockerfile: Dockerfile
+    ports:
+    - ${APP_PORT}:8000
+    env_file:
+    - .env
+  short_links_service.redis:
+    image: valkey/valkey:latest
+    hostname: short_links_service.redis
+    container_name: short_links_service.redis
+    command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
+    ports:
+    - ${REDIS_PORT}:6379
+    volumes:
+    - redis_data:/data
+    env_file:
+    - .env
+  short_links_service.postgres:
+    image: postgres:latest
+    hostname: short_links_service.postgres
+    container_name: short_links_service.postgres
+    ports:
+    - ${POSTGRES_PORT}:5432
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+    env_file:
+    - .env
+volumes:
+  redis_data:
+  pgdata:

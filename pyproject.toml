@@ -1,0 +1,99 @@
+[project]
+name = "short_links_service"
+version = "0.1.0"
+description = ""
+authors = [{name="GPNDS Team"}]
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "fastapi>=0.114.0,<1.0.0",
+    "uvicorn>=0.30.6,<1.0.0",
+    "pydantic-settings>=2.5.0,<3.0.0",
+    "dependency-injector>=4.41.0,<5.0.0",
+    "pydantic[email]>=2.11.7,<3.0.0",
+    "python-json-logger>=4.0.0,<5.0.0",
+    "passlib>=1.7.4,<2.0.0",
+    "python-multipart>=0.0.20,<1.0.0",
+    "python-jose>=3.5.0,<4.0.0",
+    "sqlalchemy[mypy]>=2.0.41,<3.0.0",
+    "bcrypt>=5.0.0,<6.0.0",
+    "sqlalchemy>=2.0.41",
+    "alembic>=1.13.0,<2.0.0",
+    "asyncpg>=0.29.0,<1.0.0",
+    "psycopg[binary]>=3.2.9",
+    "redis>=7.0.0,<8.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1,<5.0.0",
+    "pytest>=9.0.0,<10.0.0",
+    "pytest-asyncio>=1.0.0,<2.0.0",
+    "httpx>=0.28.1,<1.0.0",
+    "mypy>=1.16.1",
+    "types-python-jose>=3.5.0.20250531,<4.0.0.0",
+    "types-passlib>=1.7.7.20250602"
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+norecursedirs = [".venv", "__pycache__", "bases", "brokers", "storage", "tools", "config", "web", "services", "models", "repositories"]
+filterwarnings = ["ignore::pytest.PytestCollectionWarning"]
+
+[tool.poetry]
+package-mode = false
+
+[tool.pytest]
+disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
+
+[tool.alembic]
+script_location = "migrations"
+file_template = "%%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s"
+prepend_sys_path = "./"
+path_separator = "os"
+
+[[tool.alembic.post_write_hooks]]
+name = "ruff"
+type = "exec"
+module = "ruff"
+options = "check --fix REVISION_SCRIPT_FILENAME"
+executable = "ruff"
+
+[tool.alembic.formatters]
+generic.format = "%(levelname)-5.5s [%(name)s] %(message)s"
+generic.datefmt = "%H:%M:%S"
+
+[tool.ruff]
+output-format = "concise"
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["C9", "E", "F", "Q", "W", "I", "UP"]
+ignore = ["E203", "UP046"]
+fixable = ["I", "UP", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"conftest.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+plugins = [
+    "pydantic.mypy"
+]
+follow_imports = "silent"
+ignore_missing_imports = true
+pretty = true
+show_error_codes = true
+exclude = [
+    "tests/",
+    "migrations/"
+]
+
+[tool.pydantic-mypy]
+warn_required_dynamic_aliases = false
