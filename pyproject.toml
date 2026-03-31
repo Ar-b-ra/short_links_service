@@ -27,17 +27,12 @@ lint = [
     "mypy>=1.16.1",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
+disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
 asyncio_mode = "auto"
 testpaths = ["tests"]
 norecursedirs = [".venv", "__pycache__", "bases", "brokers", "storage", "tools", "config", "web", "services", "models", "repositories"]
 filterwarnings = ["ignore::pytest.PytestCollectionWarning"]
-
-[tool.poetry]
-package-mode = false
-
-[tool.pytest]
-disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
 
 [tool.alembic]
 script_location = "migrations"
