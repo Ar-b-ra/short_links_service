@@ -36,6 +36,7 @@
 2) Использование DI-контейнеров. DI-контейнеры позволяют уменьшить не только зацепление между отдельными частями приложения, но и разграничить слои между собой. Для этого были введены 2 контейнера - ServiceContainer (**tools/di_containers/service_container.py**) и DomainContainer (**tools/di_containers/domain_container.py**). ServiceContainer внедряется в слой Frameworks and drivers и используется для вызовов конкретных пользовательских сценариев. DomainContainer в свою очередь внедряется в сами классы сервисов, откуда вызывается для инициализации доменных моделей и вызова основной бизнес-логики
 
 Примеры DI-контейнеров представлены ниже:
+
 ```python
 from dependency_injector import containers, providers
 
@@ -44,30 +45,32 @@ from models.domain import entities
 
 class ServiceContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(modules=["web.entrypoints.well_test_entrypoint"])
-    
+
     # Задаем нашу реализацию сервиса
     analyze_service = providers.Factory(analyze_service.AnalyzeService)
 
 
 class DomainContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(modules=["services.analyze_service"])
-    
+
     # Задаем нашу реализацию доменной модели
     well_entity = providers.Factory(entities.WellEntity)
 ```
 
 Теперь попробуем внедрить наши тестовые DI-контейнеры в конкретные слои:
+
 ```python
-from tools.di_containers import domain_container, service_container
+from tools.di_containers import domain_container
+from tools.di_containers import service_container
 
 
 @router.post("/analyzeBinary")
 @inject
 async def analyze_binary(
-    time_series: DiagnosticTimeSeries = Body(alias="timeSeries"),
-    service = Provide[
-        service_container.ServiceContainer.analyze_service
-    ]
+        time_series: DiagnosticTimeSeries = Body(alias="timeSeries"),
+        service=Provide[
+            service_container.ServiceContainer.analyze_service
+        ]
 ):
     result = await service.analyze_binary(time_series)
 
@@ -77,16 +80,17 @@ async def analyze_binary(
 Здесь сервис внедряется в слой с API приложения. Мы получаем наш конкретный объект сервиса и вызываем его пользовательский сценарий.
 
 ```python
-from tools.di_containers import domain_container, service_container
+from tools.di_containers import domain_container
+from tools.di_containers import service_container
 
 
 class AnalyzeService:
     @inject
     async def analyze_binary(
-        time_series: DiagnosticTimeSeries,
-        well = Provide[
-            domain_container.DomainContainer.well_entity
-        ]
+            time_series: DiagnosticTimeSeries,
+            well=Provide[
+                domain_container.DomainContainer.well_entity
+            ]
     ):
         rate = well.calc_rate(time_series)
         ...

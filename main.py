@@ -7,4 +7,4 @@ app = fastapi_initializer.app
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", **uvicorn_config.uvicorn_config)
+    uvicorn.run("main:app", **uvicorn_config.uvicorn_config, loop="auto")

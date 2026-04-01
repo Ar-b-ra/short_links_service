@@ -152,7 +152,8 @@ RABBITMQ_VHOST=/
 **4. Добавьте конфигурацию в `app_config.py`**
 
 ```python
-from config.rabbitmq_config import RabbitMQConfig
+from config import RabbitMQConfig
+
 
 class AppConfig(BaseSettings):
     ...
@@ -168,7 +169,8 @@ class AppConfig(BaseSettings):
 В `tools/di_containers/app_container.py` добавьте:
 
 ```python
-from tools.di_containers.rabbitmq_di_container import ProducerContainer, ConsumerContainer
+from tools.di_containers import ProducerContainer, ConsumerContainer
+
 
 class AppContainer(DeclarativeContainer):
     ...
